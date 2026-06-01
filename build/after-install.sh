@@ -5,3 +5,5 @@ cat > /usr/bin/kana-quiz << 'WRAPPER'
 exec "/opt/Kana Quiz/kana-quiz" --no-sandbox "$@"
 WRAPPER
 chmod +x /usr/bin/kana-quiz
+
+sed -i 's|^Exec=.*|Exec=/usr/bin/kana-quiz %U|' /usr/share/applications/kana-quiz.desktop
