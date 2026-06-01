@@ -1,11 +1,8 @@
-const fs = require('fs')
-
 let words = []
-const stats = new Map() // id -> { correctCount, wrongCount }
+const stats = new Map()
 
-function load(filePath) {
-  const raw = fs.readFileSync(filePath, 'utf-8')
-  words = JSON.parse(raw)
+function setWords(arr) {
+  words = arr
 }
 
 function getWeight(word) {
@@ -46,4 +43,4 @@ function recordResult(id, correct) {
   stats.set(id, s)
 }
 
-module.exports = { load, getNextWord, checkAnswer, recordResult, get words() { return words } }
+module.exports = { setWords, getNextWord, checkAnswer, recordResult, get words() { return words } }

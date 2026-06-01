@@ -1,6 +1,6 @@
 {
   "name": "kana-quiz",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Popup quiz kana tiếng Nhật",
   "author": {
     "name": "hatruong219",
@@ -12,6 +12,7 @@
     "build": "electron-builder"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.2",
     "wanakana": "^5.3.1"
   },
   "devDependencies": {

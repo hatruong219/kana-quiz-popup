@@ -6,6 +6,7 @@ const DEFAULTS = {
   intervalMin: 1.5,
   closeCorrectSec: 1.5,
   closeWrongSec: 60,
+  selectedLessonIds: [],
 }
 
 function getPath() {
