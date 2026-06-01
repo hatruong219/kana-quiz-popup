@@ -19,6 +19,7 @@ win:
       arch: [x64]
 
 linux:
+  icon: build/icon.png
   target:
     - target: AppImage
       arch: [x64]
