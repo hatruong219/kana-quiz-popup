@@ -25,8 +25,10 @@ function submit() {
 }
 
 submitBtn.addEventListener('click', submit)
-answerEl.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') submit()
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return
+  if (submitBtn.onclick) window.electronAPI.closePopup()
+  else submit()
 })
 
 dontKnowBtn.addEventListener('click', () => {
@@ -38,6 +40,9 @@ dontKnowBtn.addEventListener('click', () => {
 })
 
 window.electronAPI.onResult(({ correct, correctAnswer }) => {
+  submitBtn.disabled = false
+  submitBtn.onclick = () => window.electronAPI.closePopup()
+
   if (correct) {
     feedbackEl.textContent = '✓ Đúng rồi!'
     feedbackEl.className = 'correct'
