@@ -6,6 +6,7 @@ app.disableHardwareAcceleration()
 if (process.platform === 'darwin') app.dock?.hide()
 
 const quiz = require('./quiz')
+const db = require('./db')
 const { TICK_MS } = require('./constants')
 const settingsStore = require('./settings-store')
 
@@ -18,6 +19,7 @@ let lastShownAt = 0
 let settings = {}
 let iconActive = null
 let iconPaused = null
+let allLessons = []
 
 function getWordsPath() {
   if (app.isPackaged) {
@@ -26,15 +28,45 @@ function getWordsPath() {
   return path.join(app.getAppPath(), 'src', 'words.json')
 }
 
+async function loadVocabulary() {
+  try {
+    const lessonNumbers = settings.selectedLessonIds || []
+    const data = await db.fetchAll(lessonNumbers.length > 0 ? lessonNumbers : null)
+    if (data.lessons) allLessons = data.lessons
+    if (data.vocabulary) quiz.setWords(data.vocabulary)
+  } catch (e) {
+    console.error('Failed to load vocabulary:', e.message)
+  }
+}
+
 function updateTray() {
   tray.setImage(isPaused ? iconPaused : iconActive)
   tray.setToolTip(isPaused ? 'Kana Quiz (tạm dừng)' : 'Kana Quiz')
+
+  const selectedIds = settings.selectedLessonIds || []
+  const lessonItems = allLessons.map((l) => ({
+    label: `Bài ${l.lesson_number}`,
+    type: 'checkbox',
+    checked: selectedIds.length === 0 || selectedIds.includes(l.lesson_number),
+    click: async () => {
+      let next = selectedIds.includes(l.lesson_number)
+        ? selectedIds.filter((n) => n !== l.lesson_number)
+        : [...selectedIds, l.lesson_number]
+      if (next.length === allLessons.length) next = []
+      settings.selectedLessonIds = next
+      settingsStore.save(settings)
+      await loadVocabulary()
+      updateTray()
+    },
+  }))
+
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: 'Kana Quiz', enabled: false },
       { type: 'separator' },
       { label: isPaused ? 'Tiếp tục' : 'Tạm dừng', click: () => { isPaused = !isPaused; updateTray() } },
       { label: 'Quiz ngay', enabled: !isPaused, click: () => createPopup() },
+      { label: 'Chọn bài', submenu: lessonItems },
       { label: 'Cài đặt', click: () => openSettings() },
       { type: 'separator' },
       { label: 'Quit', click: () => app.quit() },
@@ -143,9 +175,9 @@ ipcMain.on('close-settings', () => {
   if (settingsWindow && !settingsWindow.isDestroyed()) settingsWindow.close()
 })
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   settings = settingsStore.load()
-  quiz.load(getWordsPath())
+  await loadVocabulary()
 
   iconActive = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'tray-icon.png'))
   iconPaused = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'tray-icon-paused.png'))
