@@ -13,14 +13,33 @@ let tray = null
 let popupWindow = null
 let settingsWindow = null
 let isPopupOpen = false
+let isPaused = false
 let lastShownAt = 0
 let settings = {}
+let iconActive = null
+let iconPaused = null
 
 function getWordsPath() {
   if (app.isPackaged) {
     return path.join(process.resourcesPath, 'words.json')
   }
   return path.join(app.getAppPath(), 'src', 'words.json')
+}
+
+function updateTray() {
+  tray.setImage(isPaused ? iconPaused : iconActive)
+  tray.setToolTip(isPaused ? 'Kana Quiz (tạm dừng)' : 'Kana Quiz')
+  tray.setContextMenu(
+    Menu.buildFromTemplate([
+      { label: 'Kana Quiz', enabled: false },
+      { type: 'separator' },
+      { label: isPaused ? 'Tiếp tục' : 'Tạm dừng', click: () => { isPaused = !isPaused; updateTray() } },
+      { label: 'Quiz ngay', enabled: !isPaused, click: () => createPopup() },
+      { label: 'Cài đặt', click: () => openSettings() },
+      { type: 'separator' },
+      { label: 'Quit', click: () => app.quit() },
+    ])
+  )
 }
 
 function createPopup() {
@@ -128,24 +147,14 @@ app.whenReady().then(() => {
   settings = settingsStore.load()
   quiz.load(getWordsPath())
 
-  const iconPath = path.join(__dirname, '..', 'assets', 'tray-icon.png')
-  const icon = nativeImage.createFromPath(iconPath)
-  tray = new Tray(icon)
-  tray.setToolTip('Kana Quiz')
-  tray.setContextMenu(
-    Menu.buildFromTemplate([
-      { label: 'Kana Quiz', enabled: false },
-      { type: 'separator' },
-      { label: 'Quiz ngay', click: () => createPopup() },
-      { label: 'Cài đặt', click: () => openSettings() },
-      { type: 'separator' },
-      { label: 'Quit', click: () => app.quit() },
-    ])
-  )
+  iconActive = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'tray-icon.png'))
+  iconPaused = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'tray-icon-paused.png'))
+  tray = new Tray(iconActive)
+  updateTray()
 
   lastShownAt = Date.now() - settings.intervalMin * 60 * 1000
   setInterval(() => {
-    if (!isPopupOpen && Date.now() - lastShownAt >= settings.intervalMin * 60 * 1000) {
+    if (!isPaused && !isPopupOpen && Date.now() - lastShownAt >= settings.intervalMin * 60 * 1000) {
       createPopup()
     }
   }, TICK_MS)
