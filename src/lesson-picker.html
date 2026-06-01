@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chọn bài</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 16px;
+      user-select: none;
+      -webkit-app-region: drag;
+    }
+
+    h3 {
+      font-size: 14px;
+      color: #cba6f7;
+      margin-bottom: 12px;
+    }
+
+    .lessons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      max-height: 240px;
+      overflow-y: auto;
+      -webkit-app-region: no-drag;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 6px;
+    }
+
+    label:hover { background: #313244; }
+
+    input[type=checkbox] {
+      width: 16px;
+      height: 16px;
+      accent-color: #cba6f7;
+      cursor: pointer;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      -webkit-app-region: no-drag;
+    }
+
+    button {
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #btn-ok {
+      background: #cba6f7;
+      color: #1e1e2e;
+    }
+
+    #btn-ok:hover { background: #b4befe; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #1e1e2e;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    #btn-cancel {
+      background: transparent;
+      border: 1px solid #45475a;
+      color: #6c7086;
+    }
+
+    #btn-cancel:hover { color: #f38ba8; border-color: #f38ba8; }
+  </style>
+</head>
+<body>
+  <h3>Chọn bài học</h3>
+  <div class="lessons" id="lessons"></div>
+  <div class="actions">
+    <button id="btn-cancel">Hủy</button>
+    <button id="btn-ok">OK</button>
+  </div>
+  <script src="lesson-picker.js"></script>
+</body>
+</html>

@@ -8,6 +8,10 @@ files:
 extraResources:
   - from: src/words.json
     to: words.json
+  - from: assets/tray-icon.png
+    to: tray-icon.png
+  - from: assets/tray-icon-paused.png
+    to: tray-icon-paused.png
 
 win:
   target:

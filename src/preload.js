@@ -9,4 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getSettings: () => ipcRenderer.invoke('get-settings'),
   saveSettings: (s) => ipcRenderer.send('save-settings', s),
   closeSettings: () => ipcRenderer.send('close-settings'),
+  getLessonsData: () => ipcRenderer.invoke('get-lessons-data'),
+  saveLessonSelection: (ids) => ipcRenderer.send('save-lesson-selection', ids),
+  closeLessonPicker: () => ipcRenderer.send('close-lesson-picker'),
 })

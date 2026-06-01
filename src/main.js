@@ -2,6 +2,8 @@ const { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage } = require('electr
 const path = require('path')
 
 app.commandLine.appendSwitch('no-sandbox')
+app.commandLine.appendSwitch('no-zygote')
+app.commandLine.appendSwitch('disable-dev-shm-usage')
 app.disableHardwareAcceleration()
 
 if (process.platform === 'darwin') app.dock?.hide()
@@ -14,6 +16,7 @@ const settingsStore = require('./settings-store')
 let tray = null
 let popupWindow = null
 let settingsWindow = null
+let lessonPickerWindow = null
 let isPopupOpen = false
 let isPaused = false
 let lastShownAt = 0
@@ -44,30 +47,13 @@ function updateTray() {
   tray.setImage(isPaused ? iconPaused : iconActive)
   tray.setToolTip(isPaused ? 'Kana Quiz (tạm dừng)' : 'Kana Quiz')
 
-  const selectedIds = settings.selectedLessonIds || []
-  const lessonItems = allLessons.map((l) => ({
-    label: `Bài ${l.lesson_number}`,
-    type: 'checkbox',
-    checked: selectedIds.length === 0 || selectedIds.includes(l.lesson_number),
-    click: async () => {
-      let next = selectedIds.includes(l.lesson_number)
-        ? selectedIds.filter((n) => n !== l.lesson_number)
-        : [...selectedIds, l.lesson_number]
-      if (next.length === allLessons.length) next = []
-      settings.selectedLessonIds = next
-      settingsStore.save(settings)
-      await loadVocabulary()
-      updateTray()
-    },
-  }))
-
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: 'Kana Quiz', enabled: false },
       { type: 'separator' },
       { label: isPaused ? 'Tiếp tục' : 'Tạm dừng', click: () => { isPaused = !isPaused; updateTray() } },
       { label: 'Quiz ngay', enabled: !isPaused, click: () => createPopup() },
-      { label: 'Chọn bài', submenu: lessonItems },
+      { label: 'Chọn bài', click: () => openLessonPicker() },
       { label: 'Cài đặt', click: () => openSettings() },
       { type: 'separator' },
       { label: 'Quit', click: () => app.quit() },
@@ -114,6 +100,30 @@ function createPopup() {
     isPopupOpen = false
     lastShownAt = Date.now()
   })
+}
+
+function openLessonPicker() {
+  if (lessonPickerWindow) {
+    lessonPickerWindow.focus()
+    return
+  }
+
+  const height = Math.min(80 + allLessons.length * 38 + 52, 380)
+  lessonPickerWindow = new BrowserWindow({
+    width: 220,
+    height,
+    frame: false,
+    resizable: false,
+    alwaysOnTop: true,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  })
+
+  lessonPickerWindow.loadFile(path.join(__dirname, 'lesson-picker.html'))
+  lessonPickerWindow.on('closed', () => { lessonPickerWindow = null })
 }
 
 function openSettings() {
@@ -164,6 +174,22 @@ ipcMain.on('close-popup', () => {
   if (popupWindow && !popupWindow.isDestroyed()) popupWindow.close()
 })
 
+ipcMain.handle('get-lessons-data', () => ({
+  lessons: allLessons,
+  selectedIds: settings.selectedLessonIds || [],
+}))
+
+ipcMain.on('save-lesson-selection', async (event, ids) => {
+  settings.selectedLessonIds = ids
+  settingsStore.save(settings)
+  await loadVocabulary()
+  if (lessonPickerWindow && !lessonPickerWindow.isDestroyed()) lessonPickerWindow.close()
+})
+
+ipcMain.on('close-lesson-picker', () => {
+  if (lessonPickerWindow && !lessonPickerWindow.isDestroyed()) lessonPickerWindow.close()
+})
+
 ipcMain.handle('get-settings', () => settings)
 
 ipcMain.on('save-settings', (event, newSettings) => {
@@ -180,8 +206,9 @@ app.whenReady().then(async () => {
   settings = settingsStore.load()
   await loadVocabulary()
 
-  iconActive = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'tray-icon.png'))
-  iconPaused = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'tray-icon-paused.png'))
+  const iconDir = app.isPackaged ? process.resourcesPath : path.join(__dirname, '..', 'assets')
+  iconActive = nativeImage.createFromPath(path.join(iconDir, 'tray-icon.png'))
+  iconPaused = nativeImage.createFromPath(path.join(iconDir, 'tray-icon-paused.png'))
   tray = new Tray(iconActive)
   updateTray()
 
