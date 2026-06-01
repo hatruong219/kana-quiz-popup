@@ -7,10 +7,10 @@
     "build": "electron-builder"
   },
   "dependencies": {
-    "electron": "^29.0.0",
     "wanakana": "^5.3.1"
   },
   "devDependencies": {
+    "electron": "^29.0.0",
     "electron-builder": "^24.9.1"
   }
 }

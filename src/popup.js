@@ -4,6 +4,7 @@ const answerEl = document.getElementById('answer')
 const submitBtn = document.getElementById('submit')
 const dontKnowBtn = document.getElementById('dont-know')
 const feedbackEl = document.getElementById('feedback')
+const closeBtn = document.getElementById('close-btn')
 
 window.electronAPI.onSetWord(({ id, meaning }) => {
   currentId = id
@@ -36,9 +37,13 @@ window.electronAPI.onResult(({ correct, correctAnswer }) => {
   if (correct) {
     feedbackEl.textContent = '✓ Đúng rồi!'
     feedbackEl.className = 'correct'
+    setTimeout(() => window.electronAPI.closePopup(), CLOSE_DELAY_CORRECT_MS)
   } else {
     feedbackEl.textContent = `✗ Đáp án: ${correctAnswer}`
     feedbackEl.className = 'wrong'
+    closeBtn.style.display = 'block'
+    setTimeout(() => window.electronAPI.closePopup(), CLOSE_DELAY_WRONG_MS)
   }
-  setTimeout(() => window.electronAPI.closePopup(), 1500)
 })
+
+closeBtn.addEventListener('click', () => window.electronAPI.closePopup())

@@ -6,13 +6,12 @@ app.disableHardwareAcceleration()
 if (process.platform === 'darwin') app.dock?.hide()
 
 const quiz = require('./quiz')
+const { INTERVAL_MS, TICK_MS } = require('./constants')
 
 let tray = null
 let popupWindow = null
 let isPopupOpen = false
 let lastShownAt = 0
-
-const INTERVAL_MS = 2 * 60 * 1000
 
 function getWordsPath() {
   if (app.isPackaged) {
@@ -106,7 +105,7 @@ app.whenReady().then(() => {
     if (!isPopupOpen && Date.now() - lastShownAt >= INTERVAL_MS) {
       createPopup()
     }
-  }, 30 * 1000)
+  }, TICK_MS)
 
   app.on('window-all-closed', (e) => e.preventDefault())
 })

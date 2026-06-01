@@ -7,6 +7,22 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    #close-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: #6c7086;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+      -webkit-app-region: no-drag;
+      display: none;
+    }
+
+    #close-btn:hover { color: #f38ba8; }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #1e1e2e;
@@ -87,6 +103,7 @@
   </style>
 </head>
 <body>
+  <button id="close-btn">✕</button>
   <div id="meaning">…</div>
   <div id="input-row">
     <input id="answer" type="text" placeholder="kana" autocomplete="off" autofocus />
@@ -95,6 +112,9 @@
   </div>
   <div id="feedback"></div>
 
+  <script>
+    const { CLOSE_DELAY_CORRECT_MS, CLOSE_DELAY_WRONG_MS } = require('./constants')
+  </script>
   <script src="popup.js"></script>
 </body>
 </html>
