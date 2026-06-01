@@ -1,0 +1,16 @@
+{
+  "name": "kana-quiz",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "electron": "^29.0.0",
+    "wanakana": "^5.3.1"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.9.1"
+  }
+}

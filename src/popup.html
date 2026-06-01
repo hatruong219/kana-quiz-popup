@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kana Quiz</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 20px;
+      user-select: none;
+      -webkit-app-region: drag;
+    }
+
+    #meaning {
+      font-size: 22px;
+      font-weight: 600;
+      color: #cba6f7;
+      text-align: center;
+    }
+
+    #input-row {
+      display: flex;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+
+    #answer {
+      font-size: 18px;
+      width: 160px;
+      padding: 6px 10px;
+      border: 1px solid #45475a;
+      border-radius: 6px;
+      background: #313244;
+      color: #cdd6f4;
+      outline: none;
+      text-align: center;
+      font-family: 'Noto Sans JP', 'MS Gothic', monospace;
+    }
+
+    #answer:focus { border-color: #cba6f7; }
+
+    #submit {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      background: #cba6f7;
+      color: #1e1e2e;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #submit:hover { background: #b4befe; }
+
+    #dont-know {
+      padding: 6px 14px;
+      border: 1px solid #45475a;
+      border-radius: 6px;
+      background: transparent;
+      color: #6c7086;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #dont-know:hover { color: #f38ba8; border-color: #f38ba8; }
+
+    #feedback {
+      font-size: 15px;
+      min-height: 20px;
+      text-align: center;
+      -webkit-app-region: no-drag;
+    }
+
+    .correct { color: #a6e3a1; }
+    .wrong { color: #f38ba8; }
+  </style>
+</head>
+<body>
+  <div id="meaning">…</div>
+  <div id="input-row">
+    <input id="answer" type="text" placeholder="kana" autocomplete="off" autofocus />
+    <button id="submit">OK</button>
+    <button id="dont-know">Chưa biết</button>
+  </div>
+  <div id="feedback"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

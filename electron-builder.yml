@@ -1,0 +1,20 @@
+appId: com.learningeverywhere.kanaquiz
+productName: Kana Quiz
+
+files:
+  - src/**
+  - assets/**
+
+extraResources:
+  - from: src/words.json
+    to: words.json
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
