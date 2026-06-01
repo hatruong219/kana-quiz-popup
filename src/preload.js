@@ -6,4 +6,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   dontKnow: (id) => ipcRenderer.send('dont-know', { id }),
   onResult: (cb) => ipcRenderer.on('answer-result', (e, data) => cb(data)),
   closePopup: () => ipcRenderer.send('close-popup'),
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  saveSettings: (s) => ipcRenderer.send('save-settings', s),
+  closeSettings: () => ipcRenderer.send('close-settings'),
 })

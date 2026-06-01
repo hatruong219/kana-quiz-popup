@@ -1,4 +1,6 @@
 let currentId = null
+let closeCorrectMs = 1500
+let closeWrongMs = 60 * 1000
 const meaningEl = document.getElementById('meaning')
 const answerEl = document.getElementById('answer')
 const submitBtn = document.getElementById('submit')
@@ -6,9 +8,11 @@ const dontKnowBtn = document.getElementById('dont-know')
 const feedbackEl = document.getElementById('feedback')
 const closeBtn = document.getElementById('close-btn')
 
-window.electronAPI.onSetWord(({ id, meaning }) => {
+window.electronAPI.onSetWord(({ id, meaning, closeCorrectMs: ccMs, closeWrongMs: cwMs }) => {
   currentId = id
   meaningEl.textContent = meaning
+  if (ccMs) closeCorrectMs = ccMs
+  if (cwMs) closeWrongMs = cwMs
   answerEl.value = ''
   answerEl.focus()
 })
@@ -37,12 +41,12 @@ window.electronAPI.onResult(({ correct, correctAnswer }) => {
   if (correct) {
     feedbackEl.textContent = '✓ Đúng rồi!'
     feedbackEl.className = 'correct'
-    setTimeout(() => window.electronAPI.closePopup(), CLOSE_DELAY_CORRECT_MS)
+    setTimeout(() => window.electronAPI.closePopup(), closeCorrectMs)
   } else {
     feedbackEl.textContent = `✗ Đáp án: ${correctAnswer}`
     feedbackEl.className = 'wrong'
     closeBtn.style.display = 'block'
-    setTimeout(() => window.electronAPI.closePopup(), CLOSE_DELAY_WRONG_MS)
+    setTimeout(() => window.electronAPI.closePopup(), closeWrongMs)
   }
 })
 

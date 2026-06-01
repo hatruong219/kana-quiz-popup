@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cài đặt</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      height: 240px;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    #titlebar {
+      background: #181825;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      -webkit-app-region: drag;
+    }
+
+    #titlebar span { font-size: 13px; font-weight: 600; color: #cba6f7; }
+
+    #close-win {
+      -webkit-app-region: no-drag;
+      background: none;
+      border: none;
+      color: #6c7086;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 2px;
+    }
+
+    #close-win:hover { color: #f38ba8; }
+
+    .content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    label { font-size: 13px; color: #bac2de; }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    input[type=number] {
+      width: 72px;
+      padding: 4px 8px;
+      border: 1px solid #45475a;
+      border-radius: 6px;
+      background: #313244;
+      color: #cdd6f4;
+      font-size: 13px;
+      text-align: center;
+      outline: none;
+    }
+
+    input[type=number]:focus { border-color: #cba6f7; }
+
+    .unit { font-size: 11px; color: #585b70; }
+
+    .actions {
+      padding: 0 16px 16px;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    button.primary {
+      padding: 6px 18px;
+      border: none;
+      border-radius: 6px;
+      background: #cba6f7;
+      color: #1e1e2e;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    button.primary:hover { background: #b4befe; }
+
+    button.secondary {
+      padding: 6px 14px;
+      border: 1px solid #45475a;
+      border-radius: 6px;
+      background: transparent;
+      color: #6c7086;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    button.secondary:hover { color: #cdd6f4; border-color: #6c7086; }
+  </style>
+</head>
+<body>
+  <div id="titlebar">
+    <span>Cài đặt</span>
+    <button id="close-win">✕</button>
+  </div>
+
+  <div class="content">
+    <div class="row">
+      <label>Tần suất popup</label>
+      <div class="input-wrap">
+        <input type="number" id="intervalMin" min="0.5" max="60" step="0.5" />
+        <span class="unit">phút</span>
+      </div>
+    </div>
+    <div class="row">
+      <label>Tự đóng khi đúng</label>
+      <div class="input-wrap">
+        <input type="number" id="closeCorrectSec" min="1" max="30" step="0.5" />
+        <span class="unit">giây</span>
+      </div>
+    </div>
+    <div class="row">
+      <label>Tự đóng khi sai</label>
+      <div class="input-wrap">
+        <input type="number" id="closeWrongSec" min="5" max="300" step="5" />
+        <span class="unit">giây</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="secondary" id="cancel">Hủy</button>
+    <button class="primary" id="save">Lưu</button>
+  </div>
+
+  <script src="settings-renderer.js"></script>
+</body>
+</html>
