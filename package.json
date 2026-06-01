@@ -1,6 +1,11 @@
 {
   "name": "kana-quiz",
   "version": "1.0.0",
+  "description": "Popup quiz kana tiếng Nhật",
+  "author": {
+    "name": "hatruong219",
+    "email": "hatruong219.qb@gmail.com"
+  },
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
