@@ -1,5 +1,4 @@
 const fs = require('fs')
-const wanakana = require('wanakana')
 
 let words = []
 const stats = new Map() // id -> { correctCount, wrongCount }
@@ -29,8 +28,8 @@ function checkAnswer(id, userInput) {
   const word = words.find((w) => w.id === id)
   if (!word) return { correct: false, correctAnswer: '' }
 
-  const normalize = (str) => wanakana.toHiragana(str.trim().toLowerCase())
-  const correct = normalize(userInput) === normalize(word.kana)
+  const clean = (str) => str.replace(/[^ぁ-ゖァ-ー一-鿿㐀-䶿]/g, '')
+  const correct = clean(userInput) === clean(word.kana)
 
   recordResult(id, correct)
   return { correct, correctAnswer: word.kana }
