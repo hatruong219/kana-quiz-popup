@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage } = require('electron')
 const path = require('path')
 
+app.commandLine.appendSwitch('no-sandbox')
 app.disableHardwareAcceleration()
 
 if (process.platform === 'darwin') app.dock?.hide()
