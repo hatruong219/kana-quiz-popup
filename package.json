@@ -11,10 +11,6 @@
     "start": "electron .",
     "build": "electron-builder"
   },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.106.2",
-    "wanakana": "^5.3.1"
-  },
   "devDependencies": {
     "electron": "^29.0.0",
     "electron-builder": "^24.9.1"
