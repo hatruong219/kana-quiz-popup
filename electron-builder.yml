@@ -19,8 +19,6 @@ win:
       arch: [x64]
 
 linux:
-  executableArgs:
-    - --no-sandbox
   target:
     - target: AppImage
       arch: [x64]
