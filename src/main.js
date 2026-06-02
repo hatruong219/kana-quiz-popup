@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage } = require('electron')
 const path = require('path')
+const fs = require('fs')
 
 app.commandLine.appendSwitch('no-sandbox')
 app.commandLine.appendSwitch('no-zygote')
@@ -39,7 +40,13 @@ async function loadVocabulary() {
     if (data.lessons) allLessons = data.lessons
     if (data.vocabulary) quiz.setWords(data.vocabulary)
   } catch (e) {
-    console.error('Failed to load vocabulary:', e.message)
+    console.error('API unavailable, falling back to local words.json:', e.message)
+    try {
+      const local = JSON.parse(fs.readFileSync(getWordsPath(), 'utf-8'))
+      quiz.setWords(local)
+    } catch (e2) {
+      console.error('Failed to load local words.json:', e2.message)
+    }
   }
 }
 
