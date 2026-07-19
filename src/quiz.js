@@ -1,3 +1,5 @@
+const { isCorrectAnswer } = require('./answer-matcher')
+
 let words = []
 const stats = new Map()
 
@@ -25,11 +27,11 @@ function checkAnswer(id, userInput) {
   const word = words.find((w) => w.id === id)
   if (!word) return { correct: false, correctAnswer: '' }
 
-  const clean = (str) => str.replace(/[^ぁ-ゖァ-ー一-鿿㐀-䶿]/g, '')
-  const correct = clean(userInput) === clean(word.kana)
+  // chấm theo cả word (có chú thích ngoặc) lẫn reading sạch — dạng nào khớp cũng pass
+  const correct = isCorrectAnswer(userInput, word.kana, word.word)
 
   recordResult(id, correct)
-  return { correct, correctAnswer: word.kana }
+  return { correct, correctAnswer: word.word || word.kana }
 }
 
 function recordResult(id, correct) {
