@@ -1,6 +1,11 @@
 appId: com.learningeverywhere.kanaquiz
 productName: Kana Quiz
 
+# Publish thẳng thành release chính thức (không để draft) khi push tag
+publish:
+  provider: github
+  releaseType: release
+
 files:
   - src/**
   - assets/**
