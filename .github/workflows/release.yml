@@ -16,6 +16,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
+      # Đồng bộ version trong package.json = tag vừa push (bỏ tiền tố 'v')
+      # để electron-builder publish binary vào ĐÚNG release của tag này.
+      - name: Sync package.json version to tag
+        shell: bash
+        run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version
       - run: npm ci
       - run: npx electron-builder --linux deb --publish always
         env:
@@ -28,6 +33,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
+      - name: Sync package.json version to tag
+        shell: bash
+        run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version
       - run: npm ci
       - run: npx electron-builder --win nsis --publish always
         env:
